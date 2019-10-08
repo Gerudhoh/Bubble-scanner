@@ -21,13 +21,7 @@ ANSWER_KEY = {0:1, 1:4, 2:0, 3:3, 4:1}
 ANS = 5
 
 #loading image and converting to grayscale, finding edges
-image = cv2.imread(args["image"])
-
-try:
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-except cv2.error as error:
-    print(error)
-    print("could not find image with filename " + args["image"])
+if TryLoadingImage() == false:
     exit()
 
 blurred = cv2.GaussianBlur(gray, (5,5), 0)
@@ -150,14 +144,28 @@ for (q, i) in enumerate(np.arange(0, len(questionCnts), ANS)):
     #END drawing IF
 
 #END looping over q's FOR
-
-#get test taker
-
-score = (correct/float(ANS))*100
-print("[INFO] score: {:.2f}%".format(score))
-cv2.putText(paper, "{:.2f}%".format(score),(10,30),
-    cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
+GetTestTaker()
 
 cv2.imshow("Original", image)
 cv2.imshow("Exam", paper)
 cv2.waitKey(0)
+
+def TryLoadingImage():
+    image = cv2.imread(args["image"])
+
+    try:
+         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    except cv2.error as error:
+        print(error)
+        print("could not find image with filename " + args["image"])
+        return false
+        
+    return true
+
+#get test taker
+def GetTestTaker():
+    score = (correct/float(ANS))*100
+    print("[INFO] score: {:.2f}%".format(score))
+    cv2.putText(paper, "{:.2f}%".format(score),(10,30),
+        cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
+
